@@ -1,0 +1,34 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: centos-centos7.9.2009
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: autoconfig
+      run: ./autogen.sh
+
+    - name: configure
+      run: ./configure --enable-qat_sw
+
+    - name: Install dependencies
+      run: make
+
+    - name: Run install
+      run: make install
+
+    - name: Upload archive
+      uses: actions/upload-artifact@v3
+      with:
+        name: test1_qat_sw.zip
+        path: ./*
+        retention-days: 3
